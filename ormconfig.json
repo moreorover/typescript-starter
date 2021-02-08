@@ -1,0 +1,14 @@
+{
+  "type": "mysql",
+  "host": "",
+  "port": 3306,
+  "username": "",
+  "password": "",
+  "database": "",
+  "entities": ["dist/models/*.js"],
+  "migrationsTableName": "migration_table",
+  "migrations": ["src/migrations/*.ts"],
+  "cli": {
+    "migrationsDir": "src/migrations"
+  }
+}
