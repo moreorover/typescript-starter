@@ -5,10 +5,12 @@
   "username": "",
   "password": "",
   "database": "",
-  "entities": ["dist/models/*.js"],
+  "synchronize": true,
+  "entities": ["src/models/*.ts"],
   "migrationsTableName": "migration_table",
   "migrations": ["src/migrations/*.ts"],
   "cli": {
+    "entitiesDir": "src/modules",
     "migrationsDir": "src/migrations"
   }
 }

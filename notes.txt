@@ -1,0 +1,3 @@
+To generate migration
+
+npx typeorm migration:generate -n migrationName
