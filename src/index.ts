@@ -1,3 +1,4 @@
+import { scraper } from "./scraper/index";
 import "reflect-metadata";
 import "dotenv-safe/config";
 
@@ -19,6 +20,8 @@ const main = async () => {
     entities: [Store, Url],
   });
   await typeOrm.runMigrations();
+
+  scraper();
 };
 
 main();
