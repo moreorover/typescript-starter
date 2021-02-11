@@ -1,4 +1,4 @@
-import { scraper } from "./scraper/index";
+import { creationWatches } from "./scraper/index";
 import "reflect-metadata";
 import "dotenv-safe/config";
 
@@ -21,7 +21,7 @@ const main = async () => {
   });
   await typeOrm.runMigrations();
 
-  scraper();
+  creationWatches();
 };
 
 main();
