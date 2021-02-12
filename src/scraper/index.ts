@@ -1,14 +1,11 @@
 const puppeteer = require("puppeteer");
+import { HTMLElement, parse } from "node-html-parser";
 import { Browser } from "puppeteer/lib/cjs/puppeteer/common/Browser";
-import {
-  ElementHandle,
-  JSHandle,
-} from "puppeteer/lib/cjs/puppeteer/common/JSHandle";
 import { Page } from "puppeteer/lib/cjs/puppeteer/common/Page";
 import { getConnection } from "typeorm";
 import { Url } from "./../models/Url";
 
-const waitForAdsToRender = async (page: Page): Promise<boolean | JSHandle> => {
+const waitForAdsToRender = async (page: Page): Promise<boolean> => {
   return await page
     .waitForFunction(
       () => document.querySelectorAll("div.product-box").length > 0
@@ -34,31 +31,58 @@ const waitForPaginationToRender = async (page: Page): Promise<boolean> => {
     });
 };
 
-const parse = (pageNum: number, url: string): object[] => {
-  let ads = [];
-  document.querySelectorAll("div.product-box").forEach((ad: Element) => {
-    let title = ad.querySelector("h3.product-name a").textContent;
-    let itemUrl = ad.querySelector("h3.product-name a").getAttribute("href");
-    let price = Number(
-      ad
+interface ItemAd {
+  title: string;
+  price: number;
+  upc: string;
+  image: string;
+  itemUrl: string;
+}
+
+interface ParserDetails {
+  adElements(document: HTMLElement): HTMLElement[];
+  title(adElement: HTMLElement): string;
+  price(adElement: HTMLElement): number;
+  upc(adElement: HTMLElement): string;
+  image(adElement: HTMLElement): string;
+  url(adElement: HTMLElement): string;
+}
+
+const creationWatchesParser: ParserDetails = {
+  adElements: (document: HTMLElement) =>
+    document.querySelectorAll("div.product-box"),
+  title: (adElement: HTMLElement) =>
+    adElement.querySelector("h3.product-name a").textContent,
+  price: (adElement: HTMLElement) =>
+    Number(
+      adElement
         .querySelector("p.product-price span")
         .textContent.match(/[-]{0,1}[\d]*[.]{0,1}[\d]+/g)
-    );
-    let upc =
-      "CW_" + ad.querySelector("p.product-model-no").textContent.split(": ")[1];
-    let img = ad.querySelector("img.product-image").getAttribute("src");
-    console.log(title);
-    ads.push({
-      title: title,
-      url: itemUrl,
-      price: price,
-      upc: upc,
-      img: img,
-      pageNum: pageNum,
-      whereFound: url,
-    });
-  });
-  return ads;
+    ),
+  upc: (adElement: HTMLElement) =>
+    "CW_" +
+    adElement.querySelector("p.product-model-no").textContent.split(": ")[1],
+  image: (adElement: HTMLElement) =>
+    adElement.querySelector("img.product-image").getAttribute("src"),
+  url: (adElement: HTMLElement) =>
+    adElement.querySelector("h3.product-name a").getAttribute("href"),
+};
+
+const parseHtmlToAdElements = (
+  htmlElement: HTMLElement,
+  callback: (htmlElement: HTMLElement) => HTMLElement[]
+): HTMLElement[] => {
+  return callback(htmlElement);
+};
+
+const adElementProcessor = (htmlElement: HTMLElement): ItemAd => {
+  return {
+    title: creationWatchesParser.title(htmlElement),
+    itemUrl: creationWatchesParser.url(htmlElement),
+    price: creationWatchesParser.price(htmlElement),
+    upc: creationWatchesParser.upc(htmlElement),
+    image: creationWatchesParser.image(htmlElement),
+  };
 };
 
 const extractItemsFromPage = async (
@@ -73,7 +97,26 @@ const extractItemsFromPage = async (
   let paginationNumbers: number[] = [];
 
   if (await waitForAdsToRender(urlPage)) {
-    ads = await urlPage.evaluate(parse, pageNum, url);
+    let pageContent: string = await urlPage.content();
+    const root: HTMLElement = parse(pageContent, {
+      lowerCaseTagName: false, // convert tag name to lower case (hurt performance heavily)
+      comment: false, // retrieve comments (hurt performance slightly)
+      blockTextElements: {
+        script: true, // keep text content when parsing
+        noscript: true, // keep text content when parsing
+        style: true, // keep text content when parsing
+        pre: true, // keep text content when parsing
+      },
+    });
+
+    let adElements: HTMLElement[] = parseHtmlToAdElements(
+      root,
+      creationWatchesParser.adElements
+    );
+
+    let ads: ItemAd[] = adElements.map(adElementProcessor);
+
+    console.log(ads);
   }
 
   if (await waitForPaginationToRender(urlPage)) {
