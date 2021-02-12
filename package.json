@@ -28,6 +28,7 @@
     "@types/puppeteer": "^5.4.3",
     "dotenv-safe": "^8.2.0",
     "mysql": "^2.18.1",
+    "node-html-parser": "^2.1.0",
     "puppeteer": "^7.0.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.30"
