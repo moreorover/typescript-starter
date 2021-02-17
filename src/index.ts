@@ -16,7 +16,7 @@ const main = async () => {
     database: process.env.DATABASE_DB,
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
-    logging: true,
+    logging: false,
     // synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities: [Store, Url, Item, Price],
