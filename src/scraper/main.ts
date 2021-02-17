@@ -12,7 +12,7 @@ export const mainScraper = async () => {
   );
 
   const browser: BrowserClient = new Pup({
-    headless: false,
+    headless: true,
     // slowMo: 10,
   });
 
@@ -25,9 +25,12 @@ export const mainScraper = async () => {
 
   const ads: ItemAd[] = await creationWatchesScraper.start();
 
-  console.log(ads);
+  // console.log(ads);
   console.log(`Found ${ads.length} ads in total.`);
   ads.forEach(processItemAd);
+
+  urlToScrape.updatedAt = new Date();
+  urlToScrape.save();
 };
 
 export function dateTimeInPast(hours: number): Date {
