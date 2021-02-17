@@ -25,4 +25,24 @@ export class Url extends BaseEntity {
 
   @ManyToOne(() => Store, (store) => store.urls)
   store: Store;
+
+  static findByLikeUrl(urlLike: string, timeInThePast: Date) {
+    return this.createQueryBuilder("url")
+      .where("url.updatedAt < :time AND url.url like :url", {
+        time: timeInThePast,
+        url: `%${urlLike}%`,
+      })
+      .orderBy("url.updatedAt", "ASC")
+      .getOne();
+  }
+
+  static findManyByLikeUrl(urlLike: string, timeInThePast: Date) {
+    return this.createQueryBuilder("url")
+      .where("url.updatedAt < :time AND url.url like :url", {
+        time: timeInThePast,
+        url: `%${urlLike}%`,
+      })
+      .orderBy("url.updatedAt", "ASC")
+      .getMany();
+  }
 }

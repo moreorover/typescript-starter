@@ -1,4 +1,3 @@
-import { creationWatches } from "./scraper/index";
 import "reflect-metadata";
 import "dotenv-safe/config";
 
@@ -6,6 +5,7 @@ import { Store } from "./models/Store";
 import { Url } from "./models/Url";
 import { createConnection } from "typeorm";
 import path = require("path");
+import { mainScraper } from "./scraper/main";
 
 const main = async () => {
   const typeOrm = await createConnection({
@@ -21,7 +21,10 @@ const main = async () => {
   });
   await typeOrm.runMigrations();
 
-  creationWatches();
+  // setInterval(mainScraper, 1000 * 60);
+  // setInterval(mainScraper, 1000);
+  // creationWatches();
+  mainScraper();
 };
 
 main();
