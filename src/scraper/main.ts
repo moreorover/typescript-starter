@@ -3,6 +3,7 @@ import { Scraper, ScraperImplementation } from "./Scraper";
 import { creationWatchesInstructions } from "./CreationWatches";
 import { Url } from "./../models/Url";
 import { ItemAd } from "./types";
+import { processItemAd } from "./../processing/ItemProcessing";
 
 export const mainScraper = async () => {
   const urlToScrape: Url = await Url.findByLikeUrl(
@@ -25,7 +26,8 @@ export const mainScraper = async () => {
   const ads: ItemAd[] = await creationWatchesScraper.start();
 
   console.log(ads);
-  console.log(ads.length);
+  console.log(`Found ${ads.length} ads in total.`);
+  ads.forEach(processItemAd);
 };
 
 export function dateTimeInPast(hours: number): Date {
