@@ -23,10 +23,10 @@ const main = async () => {
   });
   await typeOrm.runMigrations();
 
-  // setInterval(mainScraper, 1000 * 60);
+  setInterval(mainScraper, 1000 * 60);
   // setInterval(mainScraper, 1000);
   // creationWatches();
-  mainScraper();
+  // mainScraper();
 };
 
 main();
