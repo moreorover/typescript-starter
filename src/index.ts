@@ -3,6 +3,8 @@ import "dotenv-safe/config";
 
 import { Store } from "./models/Store";
 import { Url } from "./models/Url";
+import { Price } from "./models/Price";
+import { Item } from "./models/Item";
 import { createConnection } from "typeorm";
 import path = require("path");
 import { mainScraper } from "./scraper/main";
@@ -17,7 +19,7 @@ const main = async () => {
     logging: true,
     // synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [Store, Url],
+    entities: [Store, Url, Item, Price],
   });
   await typeOrm.runMigrations();
 
