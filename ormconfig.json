@@ -6,9 +6,9 @@
   "password": "",
   "database": "",
   "synchronize": true,
-  "entities": ["src/models/*.ts"],
+  "entities": ["dist/models/*.js"],
   "migrationsTableName": "migration_table",
-  "migrations": ["src/migrations/*.ts"],
+  "migrations": ["dist/migrations/*.ts"],
   "cli": {
     "entitiesDir": "src/modules",
     "migrationsDir": "src/migrations"
