@@ -13,10 +13,10 @@ export class Price extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column("double")
   price: number;
 
-  @Column()
+  @Column("double")
   delta: number;
 
   @CreateDateColumn()

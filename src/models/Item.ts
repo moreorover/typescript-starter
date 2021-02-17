@@ -29,10 +29,10 @@ export class Item extends BaseEntity {
   @Column()
   whereFound: string;
 
-  @Column()
+  @Column("double")
   price: number;
 
-  @Column()
+  @Column("double")
   delta: number;
 
   @CreateDateColumn()
@@ -43,4 +43,12 @@ export class Item extends BaseEntity {
 
   @OneToMany(() => Price, (price) => price.item)
   prices: Price[];
+
+  static findByUpc(upc: string) {
+    return this.createQueryBuilder("item")
+      .where("item.upc = :upc", {
+        upc: upc,
+      })
+      .getOne();
+  }
 }
