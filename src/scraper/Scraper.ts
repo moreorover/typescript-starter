@@ -125,7 +125,7 @@ export class ScraperImplementation implements Scraper {
       console.error("Could not parse upc")
     );
     let image = this.parserInstructions.image(adElement, () =>
-      console.error("Could not parse title image url")
+      console.error("Could not parse image url")
     );
 
     if (title && itemUrl && price && upc && image) {
