@@ -8,6 +8,8 @@ import { Item } from "./models/Item";
 import { createConnection } from "typeorm";
 import path = require("path");
 import { mainScraper } from "./scraper/main";
+import { Client } from "discord.js";
+const Discord = require("discord.js");
 
 const main = async () => {
   const typeOrm = await createConnection({
@@ -23,7 +25,18 @@ const main = async () => {
   });
   await typeOrm.runMigrations();
 
-  setInterval(mainScraper, 1000 * 60);
+  const client: Client = new Discord.Client();
+
+  client.once("ready", () => {
+    console.log("Discord Bot ready!");
+  });
+
+  // const channel = client.channels.cache.get('<id>');
+  // channel.send('<content>');
+
+  await client.login(process.env.DISCORD_BOT_TOKEN);
+  mainScraper(client);
+  setInterval(mainScraper, 1000 * 60, client);
   // setInterval(mainScraper, 1000);
   // creationWatches();
   // mainScraper();

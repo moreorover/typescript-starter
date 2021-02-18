@@ -4,15 +4,16 @@ import { creationWatchesInstructions } from "./CreationWatches";
 import { Url } from "./../models/Url";
 import { ItemAd } from "./types";
 import { processItemAd } from "./../processing/ItemProcessing";
+import { Client } from "discord.js";
 
-export const mainScraper = async () => {
+export const mainScraper = async (discordBot: Client) => {
   const urlToScrape: Url = await Url.findByLikeUrl(
     "creationwatches",
     dateTimeInPast(2)
   );
   if (urlToScrape) {
     const browser: BrowserClient = new Pup({
-      headless: true,
+      headless: false,
       // slowMo: 10,
     });
 
@@ -20,7 +21,8 @@ export const mainScraper = async () => {
       urlToScrape,
       1,
       browser,
-      creationWatchesInstructions
+      creationWatchesInstructions,
+      discordBot
     );
 
     const ads: ItemAd[] = await creationWatchesScraper.start();

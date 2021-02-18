@@ -2,8 +2,10 @@ import { BrowserClient } from "./BrowserClient";
 import { ItemAd, ParserInstructions } from "./types";
 import { HTMLElement } from "node-html-parser";
 import { Url } from "./../models/Url";
-// const nodeHtmlToImage = require("node-html-to-image");
+import { Channel, Client, MessageEmbed, TextChannel } from "discord.js";
+const nodeHtmlToImage = require("node-html-to-image");
 // const { v4: uuidv4 } = require("uuid");
+const Discord = require("discord.js");
 export interface Scraper {
   url: Url;
   browser: BrowserClient;
@@ -13,6 +15,7 @@ export interface Scraper {
   adsLoaded: boolean;
   paginationLoaded: boolean;
   ads: ItemAd[];
+  discordBot: Client;
   start(): Promise<ItemAd[]>;
   parseAdItem(adElement: HTMLElement): ItemAd | undefined;
   // saveImageOfAnElement(htmlElement: HTMLElement): void;
@@ -28,12 +31,14 @@ export class ScraperImplementation implements Scraper {
   paginationLoaded: boolean;
   parserInstructions: ParserInstructions;
   ads: ItemAd[] = [];
+  discordBot: Client;
 
   constructor(
     url: Url,
     pageNumber: number,
     browser: BrowserClient,
-    parserInstructions: ParserInstructions
+    parserInstructions: ParserInstructions,
+    discordBot: Client
   ) {
     this.url = url;
     this.pageNumber = pageNumber;
@@ -42,6 +47,7 @@ export class ScraperImplementation implements Scraper {
     this.parserInstructions = parserInstructions;
     this.adsLoaded = false;
     this.paginationLoaded = false;
+    this.discordBot = discordBot;
   }
 
   async start(): Promise<ItemAd[]> {
@@ -106,7 +112,7 @@ export class ScraperImplementation implements Scraper {
     return this.ads;
   }
 
-  parseAdItem(adElement: HTMLElement): ItemAd | undefined {
+  async parseAdItem(adElement: HTMLElement): ItemAd | undefined {
     // nodeHtmlToImage({
     //   output: "./err/" + uuidv4() + ".png",
     //   html: adElement.outerHTML,
@@ -118,9 +124,24 @@ export class ScraperImplementation implements Scraper {
     let itemUrl = this.parserInstructions.url(adElement, () =>
       console.error("Could not parse item url")
     );
-    let price = this.parserInstructions.price(adElement, () =>
-      console.error("Could not parse price")
-    );
+    let price = this.parserInstructions.price(adElement, async () => {
+      console.error("Could not parse price");
+      const image = await nodeHtmlToImage({
+        html: adElement.outerHTML,
+      });
+
+      const exampleEmbed: MessageEmbed = new Discord.MessageEmbed()
+        .setColor("#0099ff")
+        .setTitle(title)
+        .attachFiles([{ name: "image.png", attachment: image }])
+        .setImage("attachment://image.png")
+        .setTimestamp();
+
+      const channel: Channel = this.discordBot.channels.cache.get(
+        "812040400343924777"
+      );
+      (channel as TextChannel).send(exampleEmbed);
+    });
     let upc = this.parserInstructions.upc(adElement, () =>
       console.error("Could not parse upc")
     );
