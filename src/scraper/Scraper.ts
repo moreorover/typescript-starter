@@ -55,7 +55,10 @@ export class ScraperImplementation implements Scraper {
     console.log(`Navigating to: ${this.currentUrl}`);
     await this.browser.navigateTo(this.currentUrl);
     await this.browser
-      .waitForFunction(this.parserInstructions.waitForAds)
+      .waitForFunction(
+        this.parserInstructions.waitForAds,
+        this.parserInstructions.waitOptions
+      )
       .then(() => (this.adsLoaded = true))
       .catch(() =>
         console.error(
@@ -85,7 +88,10 @@ export class ScraperImplementation implements Scraper {
     }
 
     await this.browser
-      .waitForFunction(this.parserInstructions.waitForPagination)
+      .waitForFunction(
+        this.parserInstructions.waitForPagination,
+        this.parserInstructions.waitOptions
+      )
       .then(() => (this.paginationLoaded = true))
       .catch(() =>
         console.error(

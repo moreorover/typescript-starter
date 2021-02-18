@@ -13,7 +13,11 @@ export interface BrowserClient {
   closeTab(this: BrowserClient): Promise<void>;
   closeBrowser(this: BrowserClient): Promise<void>;
   getHtmlContent(this: BrowserClient): Promise<HTMLElement>;
-  waitForFunction(this: BrowserClient, callback: Function): Promise<any>;
+  waitForFunction(
+    this: BrowserClient,
+    callback: Function,
+    options: { timeout: number }
+  ): Promise<any>;
 }
 
 export class Pup implements BrowserClient {
@@ -57,7 +61,11 @@ export class Pup implements BrowserClient {
       },
     });
   }
-  async waitForFunction(this: BrowserClient, callback: Function): Promise<any> {
-    return await this.tab.waitForFunction(callback);
+  async waitForFunction(
+    this: BrowserClient,
+    callback: Function,
+    options: { timeout: number }
+  ): Promise<any> {
+    return await this.tab.waitForFunction(callback, options);
   }
 }

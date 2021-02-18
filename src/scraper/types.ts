@@ -39,4 +39,5 @@ export interface ParserInstructions {
     url: string,
     currentPageNum: number
   ): { nextUrl: string; nextPageNumber: number };
+  waitOptions: { timeout: number };
 }

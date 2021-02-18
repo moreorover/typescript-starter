@@ -126,4 +126,5 @@ export const creationWatchesInstructions: ParserInstructions = {
       nextPageNumber: currentPageNum,
     };
   },
+  waitOptions: { timeout: 1000 * 10 },
 };
