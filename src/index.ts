@@ -10,6 +10,7 @@ import path = require("path");
 import { mainScraper } from "./scraper/main";
 import { Client } from "discord.js";
 const Discord = require("discord.js");
+import { setIntervalAsync } from "set-interval-async/fixed";
 
 const main = async () => {
   const typeOrm = await createConnection({
@@ -35,10 +36,11 @@ const main = async () => {
   // channel.send('<content>');
 
   await client.login(process.env.DISCORD_BOT_TOKEN);
-  setInterval(mainScraper, 1000 * 60, client);
+  // setInterval(mainScraper, 1000 * 60, client);
   // setInterval(mainScraper, 1000);
   // creationWatches();
   // mainScraper();
+  setIntervalAsync(mainScraper(client), 1000 * 60);
 };
 
 main();

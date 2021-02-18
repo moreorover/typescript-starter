@@ -37,6 +37,7 @@
     "node-html-to-image": "^3.1.0",
     "puppeteer": "^7.0.1",
     "reflect-metadata": "^0.1.13",
+    "set-interval-async": "1.0.34",
     "typeorm": "^0.2.30",
     "uuid": "^8.3.2",
     "validator": "^13.5.2"
