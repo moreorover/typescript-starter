@@ -17,7 +17,7 @@ export interface Scraper {
   ads: ItemAd[];
   discordBot: Client;
   start(): Promise<ItemAd[]>;
-  parseAdItem(adElement: HTMLElement): ItemAd | undefined;
+  parseAdItem(adElement: HTMLElement): Promise<ItemAd | undefined>;
   // saveImageOfAnElement(htmlElement: HTMLElement): void;
   // parse(htmlElement: HTMLElement, callback: Function): string | number;
 }
@@ -72,9 +72,14 @@ export class ScraperImplementation implements Scraper {
       );
 
       if (ads) {
-        const itemAds: ItemAd[] = ads
-          .map((adElement) => this.parseAdItem(adElement))
-          .filter((adItem) => adItem !== undefined);
+        const itemAds: ItemAd[] = await Promise.all(
+          ads
+            .map(
+              async (adElement): Promise<ItemAd | undefined> =>
+                await this.parseAdItem(adElement)
+            )
+            .filter((adItem) => adItem !== undefined)
+        );
         this.ads = this.ads.concat(itemAds);
       }
     }
@@ -112,12 +117,7 @@ export class ScraperImplementation implements Scraper {
     return this.ads;
   }
 
-  async parseAdItem(adElement: HTMLElement): ItemAd | undefined {
-    // nodeHtmlToImage({
-    //   output: "./err/" + uuidv4() + ".png",
-    //   html: adElement.outerHTML,
-    // });
-
+  async parseAdItem(adElement: HTMLElement): Promise<ItemAd | undefined> {
     let title = this.parserInstructions.title(adElement, () =>
       console.error("Could not parse title")
     );
