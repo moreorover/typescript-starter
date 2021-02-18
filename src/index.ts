@@ -40,7 +40,7 @@ const main = async () => {
   // setInterval(mainScraper, 1000);
   // creationWatches();
   // mainScraper();
-  setIntervalAsync(mainScraper(client), 1000 * 60);
+  setIntervalAsync(mainScraper, 1000 * 60, client);
 };
 
 main();
