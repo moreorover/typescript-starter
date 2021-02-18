@@ -35,7 +35,6 @@ const main = async () => {
   // channel.send('<content>');
 
   await client.login(process.env.DISCORD_BOT_TOKEN);
-  mainScraper(client);
   setInterval(mainScraper, 1000 * 60, client);
   // setInterval(mainScraper, 1000);
   // creationWatches();
