@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  scraper:
+    container_name: node-scraper
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      DATABASE_HOST: 51.178.240.249
+      DATABASE_DB: node-scraper
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: LyAGZympuR5yZfAX
