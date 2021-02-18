@@ -10,27 +10,28 @@ export const mainScraper = async () => {
     "creationwatches",
     dateTimeInPast(2)
   );
+  if (urlToScrape) {
+    const browser: BrowserClient = new Pup({
+      headless: true,
+      // slowMo: 10,
+    });
 
-  const browser: BrowserClient = new Pup({
-    headless: true,
-    // slowMo: 10,
-  });
+    const creationWatchesScraper: Scraper = new ScraperImplementation(
+      urlToScrape,
+      1,
+      browser,
+      creationWatchesInstructions
+    );
 
-  const creationWatchesScraper: Scraper = new ScraperImplementation(
-    urlToScrape,
-    1,
-    browser,
-    creationWatchesInstructions
-  );
+    const ads: ItemAd[] = await creationWatchesScraper.start();
 
-  const ads: ItemAd[] = await creationWatchesScraper.start();
+    // console.log(ads);
+    console.log(`Found ${ads.length} ads in total.`);
+    ads.forEach(processItemAd);
 
-  // console.log(ads);
-  console.log(`Found ${ads.length} ads in total.`);
-  ads.forEach(processItemAd);
-
-  urlToScrape.updatedAt = new Date();
-  urlToScrape.save();
+    urlToScrape.updatedAt = new Date();
+    urlToScrape.save();
+  }
 };
 
 export function dateTimeInPast(hours: number): Date {
