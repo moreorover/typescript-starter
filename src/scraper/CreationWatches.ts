@@ -36,7 +36,7 @@ export const creationWatchesInstructions: ParserInstructions = {
       let price: number = Number(
         adElement
           .querySelector("p.product-price span")
-          .textContent.match(/[-]{0,1}[\d]*[.]{0,1}[\d]+/g)
+          .textContent.replace(/[^\d\.\-]/g, "")
       );
       if (!(price > 0)) {
         throw new Error("Invalid price");
