@@ -50,6 +50,15 @@ export class ScraperImplementation implements Scraper {
     this.discordBot = discordBot;
   }
 
+  async fetchUrl(): Promise<void> {
+    const curTime = new Date();
+    curTime.setHours(
+      curTime.getHours() - Number(process.env.SCRAPING_FREQUENCY_IN_HOURS)
+    );
+
+    this.url = await Url.findByLikeUrl("creationwatches", curTime);
+  }
+
   async start(): Promise<ItemAd[]> {
     await this.browser.openTab();
     console.log(`Navigating to: ${this.currentUrl}`);

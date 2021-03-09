@@ -2,11 +2,11 @@ const puppeteer = require("puppeteer");
 import { Browser } from "puppeteer/lib/cjs/puppeteer/common/Browser";
 import { Page } from "puppeteer/lib/cjs/puppeteer/common/Page";
 import { HTMLElement, parse } from "node-html-parser";
+import "dotenv-safe/config";
 
 export interface BrowserClient {
   browser: Browser;
   tab: Page;
-  settings: object;
   start(this: BrowserClient): Promise<void>;
   navigateTo(this: BrowserClient, url: string): Promise<void>;
   openTab(this: BrowserClient): Promise<void>;
@@ -23,11 +23,7 @@ export interface BrowserClient {
 export class Pup implements BrowserClient {
   browser: Browser;
   tab: Page;
-  settings: object;
 
-  constructor(settings: object) {
-    this.settings = settings;
-  }
   async openTab(this: BrowserClient): Promise<void> {
     if (!this.browser) {
       await this.start();
@@ -39,7 +35,10 @@ export class Pup implements BrowserClient {
   }
   async start(this: BrowserClient): Promise<void> {
     if (!this.browser) {
-      this.browser = await puppeteer.launch(this.settings);
+      this.browser = await puppeteer.launch({
+        headless: process.env.PUPPETEER_BROWSER_HEADLESS,
+        slowMo: process.env.PUPPETEER_BROWSER_SLOWMO,
+      });
     }
   }
 
@@ -47,6 +46,8 @@ export class Pup implements BrowserClient {
     await this.tab.close();
   }
   async closeBrowser(this: BrowserClient): Promise<void> {
+    let pages = await this.browser.pages();
+    await Promise.all(pages.map((page) => page.close()));
     await this.browser.close();
   }
   async getHtmlContent(this: BrowserClient): Promise<HTMLElement> {

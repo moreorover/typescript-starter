@@ -26,7 +26,10 @@ export class Url extends BaseEntity {
   @ManyToOne(() => Store, (store) => store.urls)
   store: Store;
 
-  static findByLikeUrl(urlLike: string, timeInThePast: Date) {
+  static findByLikeUrl(
+    urlLike: string,
+    timeInThePast: Date
+  ): Promise<Url | undefined> {
     return this.createQueryBuilder("url")
       .where("url.updatedAt < :time AND url.url like :url", {
         time: timeInThePast,
