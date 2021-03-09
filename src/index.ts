@@ -26,6 +26,10 @@ const main = async () => {
   });
   await typeOrm.runMigrations();
 
+  if (typeOrm.isConnected) {
+    console.log("Database connection established.");
+  }
+
   const client: Client = new Discord.Client();
 
   client.once("ready", () => {
