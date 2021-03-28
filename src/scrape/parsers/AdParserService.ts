@@ -5,44 +5,49 @@ import { ParsedAd } from "./ParsedItem";
 import { ParserInstructions } from "./ParserInstructions";
 
 export class AdParserService extends ParserService {
-  adElement: HTMLElement;
   parsedAd: ParsedAd;
 
-  constructor(
-    adElement: HTMLElement,
-    instructions: ParserInstructions,
-    discordBot: DiscordBot
-  ) {
+  constructor(instructions: ParserInstructions, discordBot: DiscordBot) {
     super(instructions, discordBot);
-    this.adElement = adElement;
+    this.parsedAd = {
+      title: undefined,
+      price: undefined,
+      upc: undefined,
+      url: undefined,
+      image: undefined,
+    };
   }
 
-  parseAd(): void {
+  processAd(adElement: HTMLElement): void {
     this.parsedAd.title = this.tryParseSnippet(
       this.instructions.title,
       "title",
-      this.adElement
+      adElement
     );
     this.parsedAd.price = this.tryParseSnippet(
       this.instructions.price,
       "price",
-      this.adElement
+      adElement
     );
     this.parsedAd.url = this.tryParseSnippet(
       this.instructions.url,
       "url",
-      this.adElement
+      adElement
     );
     this.parsedAd.upc = this.tryParseSnippet(
       this.instructions.upc,
       "upc",
-      this.adElement
+      adElement
     );
     this.parsedAd.image = this.tryParseSnippet(
       this.instructions.image,
       "image",
-      this.adElement
+      adElement
     );
+
+    if (this.isParsedAdValid()) {
+      console.log(this.parsedAd);
+    }
   }
 
   isParsedAdValid(): boolean {

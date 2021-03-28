@@ -1,12 +1,13 @@
-import { Item } from "src/models/Item";
+import { Item } from "./../models/Item";
 import { Url } from "./../models/Url";
 
 export class DatabaseReader {
-  async findByLikeUrl(
-    likeUrl: string,
-    lastTimeUpdated: Date
-  ): Promise<Url | undefined> {
-    return await Url.findByLikeUrl(likeUrl, lastTimeUpdated);
+  async findByLikeUrl(likeUrl: string): Promise<Url | undefined> {
+    const curTime = new Date();
+    curTime.setHours(
+      curTime.getHours() - Number(process.env.SCRAPING_FREQUENCY_IN_HOURS)
+    );
+    return await Url.findByLikeUrl(likeUrl, curTime);
   }
 
   async fetchItemByUpc(upc: string): Promise<Item | undefined> {

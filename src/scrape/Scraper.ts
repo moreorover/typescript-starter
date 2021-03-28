@@ -27,7 +27,6 @@ export class Scraper {
   readonly discordBot: DiscordBot;
   readonly scraperService: ScraperService;
   readonly parserInstructions: ParserInstructions;
-  commandHistory: Command[];
 
   constructor(
     scraperName: string,
@@ -54,20 +53,12 @@ export class Scraper {
     curTime.setHours(
       curTime.getHours() - Number(process.env.SCRAPING_FREQUENCY_IN_HOURS)
     );
-    this.url = await this.databaseReader.findByLikeUrl(
-      this.urlContains,
-      curTime
-    );
+    this.url = await this.databaseReader.findByLikeUrl(this.urlContains);
 
     if (this.url !== undefined) {
       this.scraperMeta.currentPageNumber = this.startPageNumber;
       this.scrape();
     }
-  }
-
-  async takeCommand(command: Command) {
-    command.execute();
-    this.commandHistory.push(command);
   }
 
   async scrape(): Promise<void> {

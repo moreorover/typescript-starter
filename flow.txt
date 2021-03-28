@@ -1,0 +1,2 @@
+fetch url from database
+pass it over to the url scraper

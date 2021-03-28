@@ -36,7 +36,7 @@ export abstract class PageParserService extends ParserService {
   }
 
   getAds() {
-    this.adParserServices.forEach((element) => element.parseAd());
+    this.adParserServices.forEach((element) => element.processAd());
     this.parsedItems = this.adParserServices
       .filter((element) => element.isParsedAdValid())
       .map((element) => element.parsedAd);

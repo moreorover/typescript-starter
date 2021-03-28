@@ -19,11 +19,3 @@ export interface ParserInstructions {
   ): { nextUrl: string; nextPageNumber: number };
   waitOptions: { timeout: number };
 }
-
-class AdElementParser implements ParserInstructions {
-  readonly adElement: HTMLElement;
-
-  constructor(adElement: HTMLElement) {
-    this.adElement = adElement;
-  }
-}

@@ -1,7 +1,8 @@
 const Discord = require("discord.js");
 import { Channel, Client, MessageEmbed, TextChannel } from "discord.js";
 import { v4 as uuidv4 } from "uuid";
-var prettifyHtml = require("prettify-html");
+// var prettifyHtml = require("prettify-html");
+var fs = require("fs");
 
 export class DiscordBot {
   client: Client;
@@ -30,9 +31,14 @@ export class DiscordBot {
   ) {
     let uuid: string = uuidv4();
     const exampleEmbed: MessageEmbed = new Discord.MessageEmbed()
-      .attachFiles([{ name: uuid, attachment: image }])
+      .attachFiles([
+        { name: uuid + ".png", attachment: image },
+        {
+          name: uuid + ".txt",
+          attachment: Buffer.from(html),
+        },
+      ])
       .setImage(`attachment://${uuid}.png`)
-      .setDescription(prettifyHtml(html))
       .setTitle(message)
       .setTimestamp();
 

@@ -1,7 +1,9 @@
 import { DiscordBot } from "./../DiscordBot";
-import nodeHtmlToImage from "node-html-to-image";
+const nodeHtmlToImage = require("node-html-to-image");
 import { HTMLElement } from "node-html-parser";
 import { ParserInstructions } from "./ParserInstructions";
+var prettifyHtml = require("prettify-html");
+var fs = require("fs");
 
 export abstract class ParserService {
   instructions: ParserInstructions;
@@ -36,7 +38,7 @@ export abstract class ParserService {
     this.discordBot.sendEmbeddedWithImageAndText(
       "812040400343924777",
       actionName,
-      html,
+      prettifyHtml(html),
       await this.htmlToImage(html)
     );
   }

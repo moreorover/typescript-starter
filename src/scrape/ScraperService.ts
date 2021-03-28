@@ -45,15 +45,15 @@ export class PaginatedScraperService implements ScraperService {
       );
 
       if (ads) {
-        const itemAds: ItemAd[] = await Promise.all(
-          ads
-            .map(
-              async (adElement): Promise<ItemAd | undefined> =>
-                await this.parseAdItem(adElement)
-            )
-            .filter((adItem) => adItem !== undefined)
-        );
-        this.ads = this.ads.concat(itemAds);
+        // const itemAds: ItemAd[] = await Promise.all(
+        //   ads
+        //     .map(
+        //       async (adElement): Promise<ItemAd | undefined> =>
+        //         await this.parseAdItem(adElement)
+        //     )
+        //     .filter((adItem) => adItem !== undefined)
+        // );
+        // this.ads = this.ads.concat(itemAds);
       }
     }
   }
@@ -82,7 +82,7 @@ export class PaginatedScraperService implements ScraperService {
         price: price,
         upc: upc,
         image: image,
-        whereFound: this.currentUrl,
+        whereFound: "", //this.currentUrl,
       };
     }
 

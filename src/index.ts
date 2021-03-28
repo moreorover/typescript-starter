@@ -1,3 +1,6 @@
+import { DiscordBot } from "./scrape/DiscordBot";
+import { CWInstructions } from "./scrape/parsers/ParserInstructions";
+import { Spider } from "./scrape/parsers/Spider";
 import "reflect-metadata";
 import "dotenv-safe/config";
 
@@ -7,10 +10,7 @@ import { Price } from "./models/Price";
 import { Item } from "./models/Item";
 import { createConnection } from "typeorm";
 import path = require("path");
-import { mainScraper } from "./scraper/main";
-import { Client } from "discord.js";
-const Discord = require("discord.js");
-import { setIntervalAsync } from "set-interval-async/fixed";
+import { DatabaseReader } from "./scrape/DataBaseReader";
 
 const main = async () => {
   const typeOrm = await createConnection({
@@ -30,21 +30,25 @@ const main = async () => {
     console.log("Database connection established.");
   }
 
-  const client: Client = new Discord.Client();
-
-  client.once("ready", () => {
-    console.log("Discord Bot ready!");
-  });
+  const client: DiscordBot = new DiscordBot();
+  await client.logIn();
 
   // const channel = client.channels.cache.get('<id>');
   // channel.send('<content>');
 
-  await client.login(process.env.DISCORD_BOT_TOKEN);
+  let CW_spider: Spider = new Spider(
+    "creationwatches",
+    new DatabaseReader(),
+    CWInstructions,
+    client
+  );
+
+  CW_spider.start();
   // setInterval(mainScraper, 1000 * 60, client);
   // setInterval(mainScraper, 1000);
   // creationWatches();
   // mainScraper();
-  setIntervalAsync(mainScraper, 1000 * 60, client);
+  // setIntervalAsync(mainScraper, 1000 * 60, client);
 };
 
 main();
