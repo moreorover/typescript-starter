@@ -1,4 +1,4 @@
-export type ParsedAd = {
+export type ParsedItem = {
   title: string;
   price: number;
   url: string;
